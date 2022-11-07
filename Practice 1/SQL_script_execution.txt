@@ -1,0 +1,304 @@
+mysql> \. C:\Users\13158\OneDrive\Desktop\ISTE230\Practice Assignments\PE11\Pundt_PE11.sql
+--------------
+DROP DATABASE IF EXISTS Pundt_PE11
+--------------
+
+Query OK, 10 rows affected (0.07 sec)
+
+--------------
+CREATE DATABASE Pundt_PE11
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+SHOW DATABASES
+--------------
+
++--------------------+
+| Database           |
++--------------------+
+| conman             |
+| hw2                |
+| information_schema |
+| midtermpractice    |
+| mysql              |
+| pe2                |
+| pe4                |
+| performance_schema |
+| pundt_pe11         |
+| sakilav2           |
+| sys                |
+| test               |
+| world              |
++--------------------+
+13 rows in set (0.00 sec)
+
+Database changed
+--------------
+CREATE TABLE PERSON(
+	personID INT UNSIGNED AUTO_INCREMENT,
+	firstName VARCHAR(25),
+	lastName VARCHAR(25),
+	staff CHAR CHECK (staff="y" OR staff="n"),
+	patient CHAR CHECK (patient="y" OR patient="n"),
+	CONSTRAINT person_personID_pk PRIMARY KEY(personID)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+--------------
+DESCRIBE PERSON
+--------------
+
++-----------+--------------+------+-----+---------+----------------+
+| Field     | Type         | Null | Key | Default | Extra          |
++-----------+--------------+------+-----+---------+----------------+
+| personID  | int unsigned | NO   | PRI | NULL    | auto_increment |
+| firstName | varchar(25)  | YES  |     | NULL    |                |
+| lastName  | varchar(25)  | YES  |     | NULL    |                |
+| staff     | char(1)      | YES  |     | NULL    |                |
+| patient   | char(1)      | YES  |     | NULL    |                |
++-----------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE DEPARTMENT(
+	deptNum SMALLINT UNSIGNED AUTO_INCREMENT,
+	name VARCHAR(50),
+	CONSTRAINT department_deptNum_pk PRIMARY KEY(deptNum)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+--------------
+DESCRIBE DEPARTMENT
+--------------
+
++---------+-------------------+------+-----+---------+----------------+
+| Field   | Type              | Null | Key | Default | Extra          |
++---------+-------------------+------+-----+---------+----------------+
+| deptNum | smallint unsigned | NO   | PRI | NULL    | auto_increment |
+| name    | varchar(50)       | YES  |     | NULL    |                |
++---------+-------------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE INSURANCE_COMPANY(
+	coID INT UNSIGNED AUTO_INCREMENT,
+	name VARCHAR(80),
+	CONSTRAINT insurance_company_coID_pk PRIMARY KEY(coID)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+--------------
+DESCRIBE INSURANCE_COMPANY
+--------------
+
++-------+--------------+------+-----+---------+----------------+
+| Field | Type         | Null | Key | Default | Extra          |
++-------+--------------+------+-----+---------+----------------+
+| coID  | int unsigned | NO   | PRI | NULL    | auto_increment |
+| name  | varchar(80)  | YES  |     | NULL    |                |
++-------+--------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE STAFF(
+	staffID INT UNSIGNED NOT NULL,
+	managerID INT UNSIGNED,
+	supportStaff CHAR NOT NULL CHECK (supportStaff="y" OR supportStaff="n") DEFAULT "n",
+	nurse CHAR NOT NULL CHECK (nurse="y" OR nurse="n") DEFAULT "n",
+	doctor CHAR NOT NULL CHECK (doctor="y" OR doctor="n") DEFAULT "n",
+	CONSTRAINT staff_staffID_pk PRIMARY KEY(staffID),
+	CONSTRAINT staff_staffID_fk FOREIGN KEY(staffID) REFERENCES PERSON(personID),
+	CONSTRAINT staff_managerID_fk FOREIGN KEY(managerID) REFERENCES STAFF(staffID)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+--------------
+DESCRIBE STAFF
+--------------
+
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| staffID      | int unsigned | NO   | PRI | NULL    |       |
+| managerID    | int unsigned | YES  | MUL | NULL    |       |
+| supportStaff | char(1)      | NO   |     | n       |       |
+| nurse        | char(1)      | NO   |     | n       |       |
+| doctor       | char(1)      | NO   |     | n       |       |
++--------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE SUPPORT_STAFF(
+	supportStaffID INT UNSIGNED NOT NULL,
+	wage DECIMAL(4, 2) NOT NULL,
+	CONSTRAINT sstaff_supportStaffID_pk PRIMARY KEY(supportStaffID),
+	CONSTRAINT sstaff_supportStaffID_fk FOREIGN KEY (supportStaffID) REFERENCES STAFF(staffID)
+	)ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+--------------
+DESCRIBE SUPPORT_STAFF
+--------------
+
++----------------+--------------+------+-----+---------+-------+
+| Field          | Type         | Null | Key | Default | Extra |
++----------------+--------------+------+-----+---------+-------+
+| supportStaffID | int unsigned | NO   | PRI | NULL    |       |
+| wage           | decimal(4,2) | NO   |     | NULL    |       |
++----------------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE NURSE(
+	nurseID INT UNSIGNED NOT NULL,
+	certification VARCHAR(4) NOT NULL CHECK(certification="LPN" OR certification="RN" OR certification="APRN"),
+	CONSTRAINT nurse_nurseID_pk PRIMARY KEY (nurseID),
+	CONSTRAINT nurse_nurseID_fk FOREIGN KEY (nurseID) REFERENCES STAFF(staffID)
+	)ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+--------------
+DESCRIBE NURSE
+--------------
+
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| nurseID       | int unsigned | NO   | PRI | NULL    |       |
+| certification | varchar(4)   | NO   |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE DOCTOR(
+	doctorID INT UNSIGNED NOT NULL,
+	mentorID INT UNSIGNED,
+	CONSTRAINT doctor_doctorID_pk PRIMARY KEY (doctorID),
+	CONSTRAINT doctor_doctorID_fk FOREIGN KEY (doctorID) REFERENCES STAFF(staffID),
+	CONSTRAINT doctor_mentorID_fk FOREIGN KEY (mentorID) REFERENCES DOCTOR(doctorID)
+	)ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+--------------
+DESCRIBE DOCTOR
+--------------
+
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| doctorID | int unsigned | NO   | PRI | NULL    |       |
+| mentorID | int unsigned | YES  | MUL | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE PATIENT(
+	patientID INT UNSIGNED NOT NULL,
+	doctorID INT UNSIGNED,
+	CONSTRAINT patient_patientID_pk PRIMARY KEY (patientID),
+	CONSTRAINT patient_patientID_fk FOREIGN KEY (patientID) REFERENCES PERSON(personID),
+	CONSTRAINT patient_doctorID_fk FOREIGN KEY (doctorID) REFERENCES DOCTOR(doctorID)
+	)ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.02 sec)
+
+--------------
+DESCRIBE PATIENT
+--------------
+
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| patientID | int unsigned | NO   | PRI | NULL    |       |
+| doctorID  | int unsigned | YES  | MUL | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE DEPARTMENT_STAFF(
+	deptNum SMALLINT UNSIGNED NOT NULL,
+	staffID INT UNSIGNED NOT NULL,
+	CONSTRAINT deptNum_staffID_pk PRIMARY KEY (deptNum, staffID),
+	CONSTRAINT department_deptNum_fk FOREIGN KEY (deptNum) REFERENCES DEPARTMENT (deptNum),
+	CONSTRAINT department_staffID_fk FOREIGN KEY (staffID) REFERENCES STAFF(staffID)
+	)ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.03 sec)
+
+--------------
+DESCRIBE DEPARTMENT_STAFF
+--------------
+
++---------+-------------------+------+-----+---------+-------+
+| Field   | Type              | Null | Key | Default | Extra |
++---------+-------------------+------+-----+---------+-------+
+| deptNum | smallint unsigned | NO   | PRI | NULL    |       |
+| staffID | int unsigned      | NO   | PRI | NULL    |       |
++---------+-------------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+--------------
+CREATE TABLE INSURANCE_POLICY(
+	policyNum SMALLINT CHECK (policyNum >= 0 AND policyNum <= 25) NOT NULL,
+	patientID INT UNSIGNED NOT NULL,
+	insCoID INT UNSIGNED NOT NULL,
+	CONSTRAINT ipolicy_pk PRIMARY KEY (policyNum, patientID, insCoID),
+	CONSTRAINT ipolicy_patientID_fk FOREIGN KEY (patientID) REFERENCES PATIENT(patientID),
+	CONSTRAINT ipolicy_insColID_fk FOREIGN KEY (insCoID) REFERENCES INSURANCE_COMPANY(coID)
+	)ENGINE=InnoDB DEFAULT CHARSET=utf8
+--------------
+
+Query OK, 0 rows affected, 1 warning (0.03 sec)
+
+--------------
+DESCRIBE INSURANCE_POLICY
+--------------
+
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| policyNum | smallint     | NO   | PRI | NULL    |       |
+| patientID | int unsigned | NO   | PRI | NULL    |       |
+| insCoID   | int unsigned | NO   | PRI | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+--------------
+SHOW TABLES
+--------------
+
++----------------------+
+| Tables_in_pundt_pe11 |
++----------------------+
+| department           |
+| department_staff     |
+| doctor               |
+| insurance_company    |
+| insurance_policy     |
+| nurse                |
+| patient              |
+| person               |
+| staff                |
+| support_staff        |
++----------------------+
+10 rows in set (0.00 sec)
+
+mysql> exit
