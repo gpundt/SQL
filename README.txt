@@ -1,4 +1,4 @@
-This repo contains scrips and assignments from class. Scripts create databases and execute basic SQL commands.
+This repo contains scrips and assignments from my ISTE230 class. Scripts create databases and execute basic SQL commands.
 
 Within these folders, there are .txt files, and there are .sql files.
 
