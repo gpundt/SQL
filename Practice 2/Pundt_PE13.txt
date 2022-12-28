@@ -1,0 +1,105 @@
+NAME: Griffin Pundt
+CLASS: ISTE230
+ASSIGNMENT: PE13
+
+mysql> SOURCE C:\Users\13158\OneDrive\Desktop\ISTE230\Practice Assignments\PE13\Pundt_PE13.sql
+--------------
+SELECT name
+FROM recipe
+WHERE source = "Mom"
+--------------
+
++--------------------+
+| name               |
++--------------------+
+| Linguine Pescadoro |
+| Zuppa Inglese      |
++--------------------+
+2 rows in set (0.00 sec)
+
+--------------
+SELECT name
+FROM recipe
+WHERE recipeID IN (
+	SELECT recipeID
+	FROM nutrition
+	WHERE name = "calories" and quantity < 800)
+--------------
+
++----------------------+
+| name                 |
++----------------------+
+| Linguine Pescadoro   |
+| Zuppa Inglese        |
+| Crispy Fried Chicken |
++----------------------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT i.name, l.quantity
+FROM ingredient i
+INNER JOIN ingredientlist l
+ON l.recipeID = 1 and i.ingredientID = l.ingredientID
+--------------
+
++------------------------------------+----------+
+| name                               | quantity |
++------------------------------------+----------+
+| beef cube steak                    |      1.5 |
+| onion, sliced into thin rings      |        1 |
+| green bell pepper, sliced in rings |        1 |
+| Italian seasoned bread crumbs      |        1 |
+| grated Parmesan cheese             |      0.5 |
+| olive oil                          |    0.125 |
+| spaghetti sauce                    |        1 |
+| shredded mozzarella cheese         |      0.5 |
+| angel hair pasta                   |        1 |
+| garlic                             |        1 |
+| butter                             |    0.125 |
++------------------------------------+----------+
+11 rows in set (0.00 sec)
+
+--------------
+SELECT name
+FROM recipe
+WHERE recipeID NOT IN (
+	SELECT recipeID
+	FROM ingredientlist
+	WHERE ingredientID in (
+		SELECT ingredientID
+		FROM ingredient
+		WHERE type = "beef" OR type = "pork" OR type = "chicken" OR type = "lamb"))
+--------------
+
++--------------------+
+| name               |
++--------------------+
+| Linguine Pescadoro |
+| Zuppa Inglese      |
+| Lobster Thermadore |
++--------------------+
+3 rows in set (0.00 sec)
+
+--------------
+SELECT name
+FROM recipe
+WHERE recipeID in (
+	SELECT recipeID
+	FROM ingredientlist
+	WHERE ingredientID IN (
+		SELECT ingredientID
+		FROM ingredient
+		WHERE type = "fish") AND recipeID IN (
+			SELECT recipeID
+			FROM nutrition
+			WHERE name = "calories" AND quantity < 700))
+--------------
+
++--------------------+
+| name               |
++--------------------+
+| Linguine Pescadoro |
++--------------------+
+1 row in set (0.00 sec)
+
+mysql> exit
